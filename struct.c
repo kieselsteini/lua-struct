@@ -21,13 +21,15 @@
  * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
  */
-/* vim: set ts=2 sts=2 sw=2 et: */
 #include <lua.h>
 #include <lualib.h>
 #include <lauxlib.h>
 
+#define LUASTRUCT_VERSION   "lua-struct 0.1.0"
+
 #define BO_LE   1234  /* little endian */
 #define BO_BE   4321  /* big endian */
+
 /* detect machine byteorder... */
 #if  defined(__i386__) || defined(__ia64__) || defined(_M_IX86) || defined(_M_IA64) || \
   (defined(__alpha__) || defined(__alpha)) || \
@@ -37,8 +39,10 @@
   defined(__x86_64__) || \
   defined(__LITTLE_ENDIAN__)
 #define BYTEORDER BO_LE
+#define BYTEORDER_STRING    "le"
 #else
 #define BYTEORDER BO_BE
+#define BYTEORDER_STRING    "be"
 #endif
 
 static unsigned short _swap16(unsigned short i)
@@ -368,17 +372,32 @@ static luaL_Reg struct_functions[] = {
   {NULL, NULL}
 };
 
-LUAMOD_API int luaopen_struct(lua_State *L)
+/* set some variables for our package */
+static void registervars(lua_State *L)
 {
-  luaL_newlib(L, struct_functions);
-#if BYTEORDER == BO_LE
-  lua_pushliteral(L, "le");
-#else
-  lua_pushliteral(L, "be");
-#endif
+  lua_pushliteral(L, LUASTRUCT_VERSION);
+  lua_setfield(L, -2, "_VERSION");
+  lua_pushliteral(L, BYTEORDER_STRING);
   lua_setfield(L, -2, "byteorder");
   lua_pushliteral(L, "@<>bBhHiIfds");
   lua_setfield(L, -2, "formatchars");
-  return 1;
 }
 
+#if LUA_VERSION_NUM >= 502
+/* build lua 5.2 compatible module */
+LUAMOD_API int luaopen_struct(lua_State *L)
+{
+  luaL_newlib(L, struct_functions);
+  registervars(L);
+  return 1;
+}
+#else
+/* build an old lua 5.1 module */
+extern int luaopen_struct(lua_State *L)
+{
+  luaL_openlib(L, "struct", struct_functions, 0);
+  registervars(L);
+  return 1;
+}
+#endif
+/* vim: set ts=2 sts=2 sw=2 et: */
