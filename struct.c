@@ -1,6 +1,5 @@
-/* lua-struct - a lua package like the python.struct module */
 /*
- * MIT/X Consortium License
+ * lua-struct  - a lua module to read/write binary data
  *
  * Copyright (c) 2012 Sebastian Steinhauer <s.steinhauer@yahoo.de>
  *
