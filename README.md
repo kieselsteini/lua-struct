@@ -11,14 +11,14 @@ This package enables Lua to read/write binary data in a comfortable way.
 
 Example
 -------
-´´´lua
+```lua
 local bindata = struct.pack('s4hf', 'PACK', 1024, math.pi)
-´´´
+```
 bindata will contain a 4 byte "string" with PACK, a singed short with 1024
 and a 8 byte float with PI. Now we're going to unpack it...
-´´´lua
+```lua
 print(struct.unpack('s4hf', bindata))
-´´´
+```
 
 Installation
 ------------
