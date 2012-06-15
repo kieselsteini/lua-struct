@@ -1,4 +1,4 @@
-CC=gcc -ansi -Wall -O2 -fPIC -I/home/steinseba/Baustelle/System/usr/include
+CC=gcc -ansi -Wall -O2 -fPIC
 OBJ=struct.o
 
 default: $(OBJ)
